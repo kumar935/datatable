@@ -1,0 +1,19 @@
+table.datatable {
+
+}
+
+table.datatable td, table.datatable th{
+  border: 1px solid #aaaaaa;
+}
+
+table.datatable td.numeric {
+  text-align: right;
+}
+
+table.datatable .col-headers {
+
+}
+
+table.datatable .rows {
+
+}
