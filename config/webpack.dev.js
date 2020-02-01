@@ -1,7 +1,7 @@
 const path = require('path');
 const Webpack = require('webpack');
-const PORT = 7070;
-const PUBLIC_PATH = `http://localhost:${PORT}/dist/`;
+const PORT = 7007;
+const PUBLIC_PATH = "dist";
 
 module.exports = {
   mode: 'development',
@@ -9,7 +9,6 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json'],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
     compress: true,
     historyApiFallback: {
       index: '../index.html'
@@ -67,7 +66,6 @@ module.exports = {
         publicPath: JSON.stringify(PUBLIC_PATH)
       }
     }),
-    new Webpack.optimize.ModuleConcatenationPlugin(),
     new Webpack.HotModuleReplacementPlugin()
   ]
 };

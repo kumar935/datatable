@@ -5,7 +5,6 @@ const Root = () => (
     <h1>Sup</h1>
 )
 
-
 const renderApp = () => {
   render(<Root />, document.getElementById("app"))
 }
