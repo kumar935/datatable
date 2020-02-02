@@ -44,20 +44,22 @@ class Demo extends Component {
         <DataTable
           filterable
           pagination={{
-            type: "pages", // or infinite or pages by default,
-            nextPageSize: 20
+            type: "infinite", // or infinite or pages by default,
+            pageSize: 25,
+            nextPageSize: 20,
+            infiniteScrollBtn: false
           }}
           columns={[
             {
               id: "action",
-              label: "Action",
+              label: "Select",
               Header: <input type="checkbox" onChange={this.toggleSelectAll}/>,
               Cell: this.actionCell,
               filterable: false
             },
             {
               id: "srNo",
-              label: "srNo"
+              label: "Sr No"
             },
             {
               id: "product", // Uniq ID to identify column

@@ -1,19 +1,92 @@
-table.datatable {
-
+html {
+  font-family: Arial, sans-serif;
 }
 
 table.datatable td, table.datatable th{
-  border: 1px solid #aaaaaa;
+  border: 1px solid #ccc;
+  padding: 8px;
 }
 
 table.datatable td.numeric {
   text-align: right;
 }
 
-table.datatable .col-headers {
+/* tr:nth-child(even) {
+  background: #efefef;
+} */
 
+tr:hover {
+  background: #d1d1d1;
 }
 
-table.datatable .rows {
+table {
+  border: solid 1px #DDEEEE;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font: normal 13px Arial, sans-serif;
+}
 
+th {
+  background: #ccc;
+}
+
+th input {
+  margin-top: 14px;
+}
+th input[type="checkbox"] {
+  margin-top: 19px;
+}
+
+thead th {
+  background-color: #DDEFEF;
+  border: solid 1px #DDEEEE;
+  color: #336B6B;
+  padding: 10px;
+  text-align: left;
+  text-shadow: 1px 1px 1px #fff;
+}
+tbody td {
+  border: solid 1px #DDEEEE;
+  color: #333;
+  padding: 10px;
+  text-shadow: 1px 1px 1px #fff;
+}
+
+
+
+
+table.datatable {
+  margin: 0 auto;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+input[name="pageNo"]{
+  text-align: center;
+  width: 40px;
+  margin: 0 10px;
+  border-radius: 4px;
+  border: 1px solid #cecece;
+}
+.btn{
+  outline: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  background-color: #cecece;
+  font-size: 12px;
+  color: #333;
+  padding: 7px 19px;
+  border-radius: 5px;
+  box-shadow: 0 2px #969696;
+}
+.btn:hover{
+  box-shadow: 0 2px #acacac;
+  top: 0px;
+}
+.btn:active{
+  box-shadow: none;
+  top: 1px;
 }

@@ -2,12 +2,37 @@ import React, { Component } from "react";
 import uuidv4 from "uuid/v4";
 
 class DataTable extends Component {
-  state = {
-    filters: [],
-    filtersMap: {},
-    page: 0,
-    pageSize: 10
+  constructor(props) {
+    super(props);
+    this.state = {
+      filters: [],
+      filtersMap: {},
+      page: 0,
+      pageSize: props.pagination ? props.pagination.pageSize : 10
+    };
+  }
+
+  isBottom = el => {
+    return el.getBoundingClientRect().bottom <= window.innerHeight;
   };
+  componentDidMount() {
+    let { pagination } = this.props;
+    if (pagination && pagination.type === "infinite" && !pagination.infiniteScrollBtn){
+      document.addEventListener("scroll", this.trackScrolling);
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener("scroll", this.trackScrolling);
+  }
+  trackScrolling = () => {
+    const wrappedElement = document.querySelector("#app");
+    if (this.isBottom(wrappedElement)) {
+      this.onClickNextPage();
+      console.log("bottom reached");
+      // document.removeEventListener('scroll', this.trackScrolling);
+    }
+  };
+
   getRow = (row, index) => {
     let { columns } = this.props;
     let finalRow = columns.map(col => {
@@ -126,12 +151,25 @@ class DataTable extends Component {
         </table>
         {pagination ? (
           <div className="pagination">
-            {(pagination || {}).type !== "infinite" ? (
-              <button onClick={this.onClickPrevPage}>Previous</button>
+            {pagination.type !== "infinite" ? (
+              <React.Fragment>
+                <button className="btn" onClick={this.onClickPrevPage}>
+                  Previous
+                </button>
+                <input
+                  type="text"
+                  name="pageNo"
+                  value={this.state.page}
+                  disabled
+                  onChange={e => this.setState({ page: e.target.value })}
+                />
+              </React.Fragment>
             ) : (
               ""
             )}
-            <button onClick={this.onClickNextPage}>Next</button>
+            <button className="btn" onClick={this.onClickNextPage} style={pagination.infiniteScrollBtn ? {} : {display: "none"}}>
+              {pagination.type === "infinite" ? "Load More" : "Next"}
+            </button>
           </div>
         ) : (
           ""
