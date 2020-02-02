@@ -1,7 +1,8 @@
 const path = require('path');
 const Webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 const PORT = 7007;
-const PUBLIC_PATH = "dist";
+const PUBLIC_PATH = "";
 
 module.exports = {
   mode: 'development',
@@ -18,7 +19,7 @@ module.exports = {
   entry: './src/modules/Main.jsx',
   devtool: 'source-map',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, '../public'),
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
     publicPath: PUBLIC_PATH,
@@ -58,6 +59,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      title: 'Datatable',
+      template: './config/template.html',
+      filename: './index.html' //relative to root of the application
+    }),
     new Webpack.DefinePlugin({
       'process.env': {
         DEV: true
