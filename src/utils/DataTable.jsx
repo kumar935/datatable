@@ -11,6 +11,16 @@ class DataTable extends Component {
     let finalRow = columns.map(col => {
       let tdClass = "";
       if (col.numeric) tdClass += "numeric";
+
+      if(col.Cell){
+        let {Cell} = col;
+        return (
+          <td>
+            <Cell row={row}/>
+          </td>
+        )
+      }
+
       return (
         <td key={uuidv4()} className={tdClass}>
           {row[col.id]}
@@ -30,7 +40,9 @@ class DataTable extends Component {
   filterRow = (row, index) => {
     let {filters} = this.state;
     return filters.map(filter => {
-      return row[filter.id].includes(filter.value);
+      let rowValueStr = row[filter.id].toString();
+      let filterValueStr = filter.value.toString();
+      return rowValueStr.includes(filterValueStr);
     }).every(v => v === true);
   };
   colsAreValid = cols => {
@@ -62,8 +74,9 @@ class DataTable extends Component {
               <th key={col.id} style={{ width: col.width || "auto" }}>
                 <div>
                   <div>{col.label}</div>
+                  <div>{col.Header || ''}</div>
                   <div>
-                    {filterable ? <input type="text" name="filter" onChange={e => this.handleFilterChange(e, col)}/> : ""}
+                    {filterable && col.filterable !== false ? <input type="text" name="filter" onChange={e => this.handleFilterChange(e, col)}/> : ""}
                   </div>
                 </div>
               </th>
