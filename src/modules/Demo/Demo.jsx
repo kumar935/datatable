@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DataTable from "../../utils/DataTable";
-import { dummyRows, getDummyRows } from "./dummyRows";
+import { getDummyRows } from "./dummyRows";
 
 class Demo extends Component {
   state = {
@@ -12,7 +12,7 @@ class Demo extends Component {
     this.fetchRows();
   }
   fetchRows = () => {
-    this.setState({rows: getDummyRows(1000)});
+    this.setState({rows: getDummyRows(23)});
   }
   onRowClick = (row, i) => {
     console.log("logging row, i: ", row, i);
@@ -33,7 +33,7 @@ class Demo extends Component {
   };
   toggleSelectAll = e => {
     let {rows, selectedRowsMap} = this.state;
-    rows.map(row => {
+    this.datatable.getCurrentRows().map(row => {
       selectedRowsMap[row.id] = e.target.checked
     });
     this.setState({selectedRowsMap});
@@ -42,12 +42,13 @@ class Demo extends Component {
     return (
       <div className="demo-container">
         <DataTable
+          onRef={ref => this.datatable = ref}
           filterable
           pagination={{
-            type: "infinite", // or infinite or pages by default,
-            pageSize: 25,
+            type: "pages", // or infinite or pages by default,
+            pageSize: 10,
             nextPageSize: 20,
-            infiniteScrollBtn: false
+            infiniteScrollBtn: true
           }}
           columns={[
             {

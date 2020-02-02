@@ -12,16 +12,26 @@ class DataTable extends Component {
     };
   }
 
+  getPages = () => {
+    return Math.ceil(this.props.rows.length / this.state.pageSize);
+  };
+
   isBottom = el => {
     return el.getBoundingClientRect().bottom <= window.innerHeight;
   };
   componentDidMount() {
+    this.props.onRef && this.props.onRef(this);
     let { pagination } = this.props;
-    if (pagination && pagination.type === "infinite" && !pagination.infiniteScrollBtn){
+    if (
+      pagination &&
+      pagination.type === "infinite" &&
+      !pagination.infiniteScrollBtn
+    ) {
       document.addEventListener("scroll", this.trackScrolling);
     }
   }
   componentWillUnmount() {
+    this.props.onRef && this.props.onRef(null);
     document.removeEventListener("scroll", this.trackScrolling);
   }
   trackScrolling = () => {
@@ -65,24 +75,28 @@ class DataTable extends Component {
     this.props.onRowClick(row, index);
   };
   filterRow = (row, index) => {
-    let { filters, page, pageSize } = this.state;
-    let { pagination } = this.props;
-
-    let rowInCurrentPage = true;
-    if (pagination) {
-      rowInCurrentPage =
-        index >= page * pageSize && index < (page + 1) * pageSize;
-    }
-
-    let filteringResult = filters
+    let { filters } = this.state;
+    let matchesFilters = filters
       .map(filter => {
         let rowValueStr = row[filter.id].toString();
         let filterValueStr = filter.value.toString();
         return rowValueStr.includes(filterValueStr);
       })
       .every(v => v === true);
-    return filteringResult && rowInCurrentPage;
+    return matchesFilters;
   };
+
+  applyPagination = (row, index) => {
+    let { pagination } = this.props;
+    let { page, pageSize } = this.state;
+    let rowInCurrentPage = true;
+    if (pagination) {
+      rowInCurrentPage =
+        index >= page * pageSize && index < (page + 1) * pageSize;
+    }
+    return rowInCurrentPage;
+  };
+
   colsAreValid = cols => {
     let colIds = cols.map(col => col.id);
     let uniqueColumns = new Set(colIds).size === colIds.length;
@@ -104,12 +118,16 @@ class DataTable extends Component {
   };
   onClickNextPage = () => {
     let { page, pageSize } = this.state;
-    let { pagination } = this.props;
+    let { pagination, rows } = this.props;
+    if (page + 1 >= this.getPages()) return;
     if (pagination.type === "infinite") {
       this.setState({ pageSize: pageSize + (pagination.nextPageSize || 10) });
     } else {
       this.setState({ page: ++page });
     }
+  };
+  getCurrentRows = () => {
+    return this.props.rows.filter(this.filterRow).filter(this.applyPagination);
   };
   render() {
     let { columns, rows, filterable, pagination } = this.props;
@@ -144,9 +162,7 @@ class DataTable extends Component {
             </tr>
           </thead>
           <tbody className="rows">
-            {rows
-              .filter(this.filterRow)
-              .map((row, index) => this.getRow(row, index))}
+            {this.getCurrentRows().map((row, index) => this.getRow(row, index))}
           </tbody>
         </table>
         {pagination ? (
@@ -159,15 +175,18 @@ class DataTable extends Component {
                 <input
                   type="text"
                   name="pageNo"
-                  value={this.state.page}
+                  value={this.state.page + 1}
                   disabled
-                  onChange={e => this.setState({ page: e.target.value })}
                 />
               </React.Fragment>
             ) : (
               ""
             )}
-            <button className="btn" onClick={this.onClickNextPage} style={pagination.infiniteScrollBtn ? {} : {display: "none"}}>
+            <button
+              className="btn"
+              onClick={this.onClickNextPage}
+              style={pagination.infiniteScrollBtn ? {} : { display: "none" }}
+            >
               {pagination.type === "infinite" ? "Load More" : "Next"}
             </button>
           </div>
@@ -180,35 +199,3 @@ class DataTable extends Component {
 }
 
 export default DataTable;
-
-{
-  /* <DataTable
-  columns={[
-    {
-      id: "product", // Uniq ID to identify column
-      label: "Product",
-      numeric: false,
-      width: "10px" | "10%" | "" | undefined
-    },
-    {
-      id: "price",
-      label: "Price",
-      numeric: true // Right Align
-    }
-  ]}
-  rows={[
-    {
-      id: some_id1,
-      product: React.ReactNode | string | number, // Key is column id and value is
-      price: 15.2
-    },
-    {
-      id: some_id2,
-      product: React.ReactNode | string | number,
-      price: "$15.5"
-    }
-  ]}
-  onRowClick={`(rowData: Object, rowIndex: number) => void`}
-  onSelectionChange={`(string[] | 'All') => void`}
-/>; */
-}
