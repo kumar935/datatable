@@ -12,17 +12,25 @@ class Demo extends Component {
     this.fetchRows();
   }
   fetchRows = () => {
-    this.setState({rows: getDummyRows(23)});
-  }
+    fetch("https://jsonplaceholder.typicode.com/photos")
+      .then(response => {
+        return response.json();
+      })
+      .then(rows => {
+        this.setState({ rows });
+      });
+
+    // this.setState({ rows: getDummyRows(1000) });
+  };
   onRowClick = (row, i) => {
     console.log("logging row, i: ", row, i);
   };
-  actionCell = ({row}) => {
+  actionCell = ({ row }) => {
     let { selectedRowsMap } = this.state;
     return (
       <input
         type="checkbox"
-        checked={(selectedRowsMap[row.id])}
+        checked={selectedRowsMap[row.id]}
         onChange={e => {
           selectedRowsMap[row.id] = e.target.checked;
           this.setState({ selectedRowsMap });
@@ -32,17 +40,17 @@ class Demo extends Component {
     );
   };
   toggleSelectAll = e => {
-    let {rows, selectedRowsMap} = this.state;
+    let { rows, selectedRowsMap } = this.state;
     this.datatable.getCurrentRows().map(row => {
-      selectedRowsMap[row.id] = e.target.checked
+      selectedRowsMap[row.id] = e.target.checked;
     });
-    this.setState({selectedRowsMap});
-  }
+    this.setState({ selectedRowsMap });
+  };
   render() {
     return (
       <div className="demo-container">
         <DataTable
-          onRef={ref => this.datatable = ref}
+          onRef={ref => (this.datatable = ref)}
           filterable
           pagination={{
             type: "pages", // or infinite or pages by default,
@@ -54,31 +62,26 @@ class Demo extends Component {
             {
               id: "action",
               label: "Select",
-              Header: <input type="checkbox" onChange={this.toggleSelectAll}/>,
+              Header: <input type="checkbox" onChange={this.toggleSelectAll} />,
               Cell: this.actionCell,
               filterable: false
             },
             {
-              id: "srNo",
-              label: "Sr No"
+              id: "albumId",
+              label: "albumId"
             },
             {
-              id: "product", // Uniq ID to identify column
-              label: "Product",
+              id: "title", // Uniq ID to identify column
+              label: "title",
               width: "100px"
             },
             {
-              id: "availability",
-              label: "Availability"
+              id: "url",
+              label: "url"
             },
             {
-              id: "category",
-              label: "Category"
-            },
-            {
-              id: "price",
-              label: "Price",
-              numeric: true // Right Align
+              id: "thumbnailUrl",
+              label: "thumbnailUrl"
             }
           ]}
           rows={this.state.rows}
