@@ -10,12 +10,20 @@ class Demo extends Component {
     return (
       <div className="demo-container">
         <DataTable
+          filterable
           columns={[
             {
               id: "product", // Uniq ID to identify column
               label: "Product",
-              numeric: false,
               width: "100px"
+            },
+            {
+              id: "availability",
+              label: "Availability"
+            },
+            {
+              id: "category",
+              label: "Category"
             },
             {
               id: "price",
@@ -26,22 +34,30 @@ class Demo extends Component {
           rows={[
             {
               id: 1,
-              product: "xyz", // Key is column id and value is
+              product: "Pen", // Key is column id and value is,
+              category: "stationary",
+              availability: "AVAILABLE",
               price: 15.2
             },
             {
               id: 2,
-              product: "xyz",
+              product: "apple",
+              category: "fruit",
+              availability: "OUT OF STOCK",
               price: "$15.5"
             },
             {
               id: 3,
-              product: "xyz", // Key is column id and value is
+              product: "pineapple", // Key is column id and value is
+              category: "fruit",
+              availability: "AVAILABLE",
               price: 315.2
             },
             {
               id: 4,
-              product: "xyz",
+              product: "Galaxy s9",
+              category: "electronic",
+              availability: "AVAILABLE",
               price: "22215.5"
             }
           ]}
