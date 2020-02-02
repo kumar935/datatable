@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "webpack-dev-server --config config/webpack.dev.js",
-    "build": "webpack --mode production --config config/webpack.dev.js"
+    "dev": "webpack-dev-server --config config/webpack.config.js",
+    "build": "webpack --mode production --config config/webpack.config.js"
   },
   "jest": {
     "setupFilesAfterEnv": ["<rootDir>/config/jestSetup.js"]
