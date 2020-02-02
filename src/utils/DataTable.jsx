@@ -186,7 +186,11 @@ class DataTable extends Component {
             <button
               className="btn"
               onClick={this.onClickNextPage}
-              style={pagination.infiniteScrollBtn ? {} : { display: "none" }}
+              style={
+                pagination.type === "pages" || pagination.infiniteScrollBtn
+                  ? {}
+                  : { display: "none" }
+              }
             >
               {pagination.type === "infinite" ? "Load More" : "Next"}
             </button>

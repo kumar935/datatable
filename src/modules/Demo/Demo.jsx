@@ -42,7 +42,7 @@ class Demo extends Component {
 
   imageCell = ({ row }) => {
     return (
-      <a href="#" className="tooltip">
+      <a href={row.url} className="tooltip" target="_blank">
         Image
         <span>
           <img src={row.url} />
@@ -53,7 +53,7 @@ class Demo extends Component {
 
   thumbnailCell = ({ row }) => {
     return (
-      <a href="#" className="tooltip">
+      <a href={row.thumbnailUrl} className="tooltip" target="_blank">
         Thumbnail
         <span>
           <img src={row.thumbnailUrl} alt="" />
@@ -79,7 +79,7 @@ class Demo extends Component {
             type: "pages", // or infinite or pages by default,
             pageSize: 10,
             nextPageSize: 20,
-            infiniteScrollBtn: true
+            infiniteScrollBtn: false
           }}
           columns={[
             {
