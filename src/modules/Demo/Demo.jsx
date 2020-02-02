@@ -39,6 +39,29 @@ class Demo extends Component {
       />
     );
   };
+
+  imageCell = ({ row }) => {
+    return (
+      <a href="#" className="tooltip">
+        Image
+        <span>
+          <img src={row.url} />
+        </span>
+      </a>
+    );
+  };
+
+  thumbnailCell = ({ row }) => {
+    return (
+      <a href="#" className="tooltip">
+        Thumbnail
+        <span>
+          <img src={row.thumbnailUrl} alt="" />
+        </span>
+      </a>
+    );
+  };
+
   toggleSelectAll = e => {
     let { rows, selectedRowsMap } = this.state;
     this.datatable.getCurrentRows().map(row => {
@@ -64,24 +87,31 @@ class Demo extends Component {
               label: "Select",
               Header: <input type="checkbox" onChange={this.toggleSelectAll} />,
               Cell: this.actionCell,
-              filterable: false
+              filterable: false,
+              width: "20px"
             },
             {
               id: "albumId",
-              label: "albumId"
+              label: "albumId",
+              width: "20px"
             },
             {
               id: "title", // Uniq ID to identify column
               label: "title",
-              width: "100px"
+              width: "32%",
+              longtext: true
             },
             {
               id: "url",
-              label: "url"
+              label: "Image",
+              Cell: this.imageCell,
+              filterable: false
             },
             {
               id: "thumbnailUrl",
-              label: "thumbnailUrl"
+              label: "Thumbnail",
+              Cell: this.thumbnailCell,
+              filterable: false
             }
           ]}
           rows={this.state.rows}

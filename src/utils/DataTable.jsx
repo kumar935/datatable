@@ -48,6 +48,7 @@ class DataTable extends Component {
     let finalRow = columns.map(col => {
       let tdClass = "";
       if (col.numeric) tdClass += "numeric";
+      if (col.longtext) tdClass += "longtext";
 
       if (col.Cell) {
         let { Cell } = col;
@@ -59,7 +60,7 @@ class DataTable extends Component {
       }
 
       return (
-        <td key={uuidv4()} className={tdClass}>
+        <td key={uuidv4()} className={tdClass} title={row[col.id]}>
           {row[col.id]}
         </td>
       );
