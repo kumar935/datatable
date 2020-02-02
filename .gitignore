@@ -3,3 +3,4 @@ config/firebaseConfig.json
 .DS_Store
 public
 dist
+.firebase
