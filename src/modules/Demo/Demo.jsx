@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DataTable from "../../utils/DataTable";
+import DataTable from "../../utils/DataTable.func";
 import { getDummyRows } from "./dummyRows";
 
 class Demo extends Component {
@@ -92,8 +92,8 @@ class Demo extends Component {
             },
             {
               id: "albumId",
-              label: "albumId",
-              width: "20px"
+              label: "Album Id",
+              width: "60px"
             },
             {
               id: "title", // Uniq ID to identify column

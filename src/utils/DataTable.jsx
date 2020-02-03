@@ -87,7 +87,7 @@ class DataTable extends Component {
     return matchesFilters;
   };
 
-  applyPagination = (row, index) => {
+  paginationFilter = (row, index) => {
     let { pagination } = this.props;
     let { page, pageSize } = this.state;
     let rowInCurrentPage = true;
@@ -128,7 +128,7 @@ class DataTable extends Component {
     }
   };
   getCurrentRows = () => {
-    return this.props.rows.filter(this.filterRow).filter(this.applyPagination);
+    return this.props.rows.filter(this.filterRow).filter(this.paginationFilter);
   };
   render() {
     let { columns, rows, filterable, pagination } = this.props;
@@ -204,3 +204,10 @@ class DataTable extends Component {
 }
 
 export default DataTable;
+
+
+/*
+refactoring:
+- provider consumer
+- separate scroll to bottom func
+*/

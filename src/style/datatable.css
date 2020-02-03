@@ -16,6 +16,10 @@ table.datatable th {
   padding: 8px;
 }
 
+table.datatable td {
+  padding: 20px 15px;
+}
+
 table.datatable td.numeric {
   text-align: right;
 }
