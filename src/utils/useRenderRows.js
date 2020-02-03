@@ -12,14 +12,14 @@ export default function useRenderRows({ columns, rows, onClickRow }) {
       if (col.Cell) {
         let { Cell } = col;
         return (
-          <td>
+          <td key={col.id}>
             <Cell row={row} />
           </td>
         );
       }
 
       return (
-        <td key={uuidv4()} className={tdClass} title={row[col.id]}>
+        <td key={col.id} className={tdClass} title={row[col.id]}>
           {row[col.id]}
         </td>
       );
