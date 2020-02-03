@@ -6,7 +6,8 @@ class Demo extends Component {
   state = {
     selectedRowsMap: {},
     selectedRowIds: [],
-    rows: []
+    rows: [],
+    selectAllChecked: false
   };
   componentDidMount() {
     this.fetchRows();
@@ -62,12 +63,15 @@ class Demo extends Component {
     );
   };
 
-  toggleSelectAll = e => {
-    let { rows, selectedRowsMap } = this.state;
-    this.datatable.getCurrentRows().map(row => {
-      selectedRowsMap[row.id] = e.target.checked;
+  toggleSelectAll = ({ checked, visibleRows }) => {
+    let { selectedRowsMap } = this.state;
+    visibleRows.map(row => {
+      selectedRowsMap[row.id] = checked;
     });
-    this.setState({ selectedRowsMap });
+    this.setState({ selectedRowsMap, selectAllChecked: checked });
+  };
+  onChangeDataTable = ({ selectAllChecked, visibleRows}) => {
+    this.toggleSelectAll({ checked: selectAllChecked, visibleRows });
   };
   render() {
     return (
@@ -76,8 +80,8 @@ class Demo extends Component {
           onRef={ref => (this.datatable = ref)}
           filterable
           pagination={{
-            type: "infinite", // or infinite or pages by default,
-            pageSize: 24,
+            type: "pages", // or infinite or pages by default,
+            pageSize: 10,
             nextPageSize: 20,
             infiniteScrollBtn: false
           }}
@@ -85,7 +89,15 @@ class Demo extends Component {
             {
               id: "action",
               label: "Select",
-              Header: <input type="checkbox" onChange={this.toggleSelectAll} />,
+              Header: ({ onChange }) => {
+                return (
+                  <input
+                    type="checkbox"
+                    onChange={e => onChange({selectAllChecked: e.target.checked})}
+                    checked={this.state.selectAllChecked}
+                  />
+                );
+              },
               Cell: this.actionCell,
               filterable: false,
               width: "20px"
@@ -116,7 +128,7 @@ class Demo extends Component {
           ]}
           rows={this.state.rows}
           onRowClick={this.onRowClick}
-          onSelectionChange={this.onSelectionChange}
+          onChange={this.onChangeDataTable}
         />
       </div>
     );

@@ -22,8 +22,8 @@ export default function useRows({ filters, page, pageSize, pagination, rows }) {
     return rowInCurrentPage;
   }
 
-  let finalRows = rows.filter(filterRow).filter(paginationFilter)
+  let visibleRows = rows.filter(filterRow).filter(paginationFilter)
 
 
-  return [finalRows];
+  return [visibleRows];
 }

@@ -8,7 +8,7 @@ const colsAreValid = cols => {
   return uniqueColumns;
 };
 
-function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
+function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange }) {
   // let [rows, setRows] = useState([]);
   let [page, setPage] = useState(0);
   let [pageSize, setPageSize] = useState(pagination ? pagination.pageSize : 10);
@@ -80,30 +80,43 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
     onRowClick(row, index);
   }
 
+  const onChangeLoc = (argObj) => {
+    onChange({...argObj, visibleRows});
+  }
+
   return (
     <div>
       <table className="datatable">
         <thead className="col-headers">
           <tr>
-            {columns.map(col => (
-              <th key={col.id} style={{ width: col.width || "auto" }}>
-                <div>
-                  <div>{col.label}</div>
-                  <div>{col.Header || ""}</div>
+            {columns.map(col => {
+              let {Header} = col;
+              return (
+                <th key={col.id} style={{ width: col.width || "auto" }}>
                   <div>
-                    {filterable && col.filterable !== false ? (
-                      <input
-                        type="text"
-                        name="filter"
-                        onChange={e => handleFilterChange(e, col)}
-                      />
+                    <div>{col.label}</div>
+                    {/* <div>{col.Header || ""}</div> */}
+                    {typeof col.Header === "function" ? (
+                      <div><Header onChange={onChangeLoc}/></div>
                     ) : (
-                      ""
+                      <div>{col.Header || ""}</div>
                     )}
+
+                    <div>
+                      {filterable && col.filterable !== false ? (
+                        <input
+                          type="text"
+                          name="filter"
+                          onChange={e => handleFilterChange(e, col)}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-                </div>
-              </th>
-            ))}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody className="rows">{renderedRows}</tbody>
@@ -138,5 +151,7 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
     </div>
   );
 }
+
+DataTable.getVisibleRows = () => {};
 
 export default DataTable;
