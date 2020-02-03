@@ -76,8 +76,8 @@ class Demo extends Component {
           onRef={ref => (this.datatable = ref)}
           filterable
           pagination={{
-            type: "pages", // or infinite or pages by default,
-            pageSize: 10,
+            type: "infinite", // or infinite or pages by default,
+            pageSize: 24,
             nextPageSize: 20,
             infiniteScrollBtn: false
           }}

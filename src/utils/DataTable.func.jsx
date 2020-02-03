@@ -1,59 +1,66 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import uuidv4 from "uuid/v4";
-
+import useRows from './useRows';
+import useRenderRows from "./useRenderRows";
+import useScroll from "./useScroll";
 const colsAreValid = cols => {
   let colIds = cols.map(col => col.id);
   let uniqueColumns = new Set(colIds).size === colIds.length;
   return uniqueColumns;
 };
 
-function DataTable({ rows, columns, filterable, pagination, onRowClick, onRef }) {
+function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
   // let [rows, setRows] = useState([]);
   let [page, setPage] = useState(0);
   let [pageSize, setPageSize] = useState(pagination ? pagination.pageSize : 10);
   let [filters, setFilters] = useState([]);
   let [filtersMap, setFiltersMap] = useState([]);
 
-  function getPages () {
-    return Math.ceil(rows.length / pageSize);
-  };
+  let [visibleRows] = useRows({
+    filters,
+    page,
+    pageSize,
+    pagination,
+    rows
+  });
+  let [renderedRows] = useRenderRows({
+    onClickRow,
+    columns,
+    rows: visibleRows
+  });
 
-  function isBottom (el) {
-    return el.getBoundingClientRect().bottom <= window.innerHeight;
-  }
-
-  function trackScrolling() {
-    const wrappedElement = document.querySelector("#app");
-    if (isBottom(wrappedElement)) {
-      onClickNextPage();
-      console.log("bottom reached");
-      // document.removeEventListener('scroll', trackScrolling);
-    }
-  }
+  const pageSizeRef = useRef(pageSize);
+  const rowsRef = useRef(rows);
 
   useEffect(() => {
-    onRef && onRef(this); // does this still work?
-    if (
-      pagination &&
-      pagination.type === "infinite" &&
-      !pagination.infiniteScrollBtn
-    ) {
-      document.addEventListener("scroll", trackScrolling);
-    }
+    rowsRef.current = rows;
+    pageSizeRef.current = pageSize;
     return () => {
-      onRef && onRef(null); // does this still work?
-      document.removeEventListener("scroll", trackScrolling);
+      //cleanup
     };
-  }, []);
+  }, [rows, pageSize])
+
+
+  useScroll({
+    rows,
+    pagination,
+    atBottom: () => {
+      onClickNextPage()
+    }
+  })
+
 
   function onClickPrevPage () {
     if (page > 0) setPage( --page );
   }
 
   function onClickNextPage () {
-    if (page + 1 >= getPages()) return;
+    // console.log('logging getPages(): ', rows.length);
+    let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current)
+    if (page + 1 >= _pages) return;
     if (pagination.type === "infinite") {
-      setPageSize(pageSize + (pagination.nextPageSize || 10))
+      let nextPageSize = pageSizeRef.current + (pagination.nextPageSize || 10);
+      setPageSize(nextPageSize);
     } else {
       setPage( ++page )
     }
@@ -71,65 +78,12 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onRef })
       id: v[0],
       value: v[1]
     }));
-    setFilters({ filters: filtersListFromMap });
-    setFiltersMap({ filtersMap });
-  }
-
-  function filterRow(row, index) {
-    let matchesFilters = filters
-      .map(filter => {
-        let rowValueStr = row[filter.id].toString();
-        let filterValueStr = filter.value.toString();
-        return rowValueStr.includes(filterValueStr);
-      })
-      .every(v => v === true);
-    return matchesFilters;
-  }
-
-  function paginationFilter(row, index) {
-    let rowInCurrentPage = true;
-    if (pagination) {
-      rowInCurrentPage =
-        index >= page * pageSize && index < (page + 1) * pageSize;
-    }
-    return rowInCurrentPage;
+    setFilters( filtersListFromMap );
+    setFiltersMap( filtersMap );
   }
 
   function onClickRow(row, index) {
     onRowClick(row, index);
-  }
-
-  function getRow(row, index) {
-    let finalRow = columns.map(col => {
-      let tdClass = "";
-      if (col.numeric) tdClass += "numeric";
-      if (col.longtext) tdClass += "longtext";
-
-      if (col.Cell) {
-        let { Cell } = col;
-        return (
-          <td>
-            <Cell row={row} />
-          </td>
-        );
-      }
-
-      return (
-        <td key={uuidv4()} className={tdClass} title={row[col.id]}>
-          {row[col.id]}
-        </td>
-      );
-    });
-    let wrappedFinalRow = (
-      <tr key={uuidv4()} onClick={() => onClickRow(row, index)}>
-        {finalRow}
-      </tr>
-    );
-    return wrappedFinalRow;
-  }
-
-  function getCurrentRows() {
-    return rows.filter(filterRow).filter(paginationFilter);
   }
 
   return (
@@ -159,7 +113,7 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onRef })
           </tr>
         </thead>
         <tbody className="rows">
-          {getCurrentRows().map((row, index) => getRow(row, index))}
+          {renderedRows}
         </tbody>
       </table>
       {pagination ? (
