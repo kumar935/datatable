@@ -1,6 +1,5 @@
 import React, { Component, useState, useEffect, useRef } from "react";
-import uuidv4 from "uuid/v4";
-import useRows from './useRows';
+import useRows from "./useRows";
 import useRenderRows from "./useRenderRows";
 import useScroll from "./useScroll";
 const colsAreValid = cols => {
@@ -35,34 +34,29 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
   useEffect(() => {
     rowsRef.current = rows;
     pageSizeRef.current = pageSize;
-    return () => {
-      //cleanup
-    };
-  }, [rows, pageSize])
-
+  }, [rows, pageSize]);
 
   useScroll({
     rows,
     pagination,
     atBottom: () => {
-      onClickNextPage()
+      onClickNextPage();
     }
-  })
+  });
 
-
-  function onClickPrevPage () {
-    if (page > 0) setPage( --page );
+  function onClickPrevPage() {
+    if (page > 0) setPage(--page);
   }
 
-  function onClickNextPage () {
+  function onClickNextPage() {
     // console.log('logging getPages(): ', rows.length);
-    let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current)
+    let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
     if (page + 1 >= _pages) return;
     if (pagination.type === "infinite") {
       let nextPageSize = pageSizeRef.current + (pagination.nextPageSize || 10);
       setPageSize(nextPageSize);
     } else {
-      setPage( ++page )
+      setPage(++page);
     }
   }
 
@@ -78,8 +72,8 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
       id: v[0],
       value: v[1]
     }));
-    setFilters( filtersListFromMap );
-    setFiltersMap( filtersMap );
+    setFilters(filtersListFromMap);
+    setFiltersMap(filtersMap);
   }
 
   function onClickRow(row, index) {
@@ -112,9 +106,7 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
             ))}
           </tr>
         </thead>
-        <tbody className="rows">
-          {renderedRows}
-        </tbody>
+        <tbody className="rows">{renderedRows}</tbody>
       </table>
       {pagination ? (
         <div className="pagination">
@@ -123,12 +115,7 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
               <button className="btn" onClick={onClickPrevPage}>
                 Previous
               </button>
-              <input
-                type="text"
-                name="pageNo"
-                value={page + 1}
-                disabled
-              />
+              <input type="text" name="pageNo" value={page + 1} disabled />
             </React.Fragment>
           ) : (
             ""
@@ -153,9 +140,3 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick }) {
 }
 
 export default DataTable;
-
-/*
-refactoring:
-- provider consumer
-- separate scroll to bottom func
-*/
