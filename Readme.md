@@ -1,5 +1,7 @@
 ### DataTable
 
+[Live Demo](https://animesh.firebaseapp.com/)
+
 Configurable React based utility to render tables
 
 ### Setup
@@ -18,9 +20,9 @@ Available options:
 - pagination:
   - type: "infinite" or "pages"
   - pageSize
-  - nextPageSize (for "infinite")
-  - infiniteScrollBtn (for "infinite")
-  - maxRows (for "infinite")
+  - nextPageSize (for type "infinite")
+  - infiniteScrollBtn (for type "infinite")
+  - maxRows (for type "infinite")
 - columns:
   - id
   - numeric (right aligns numeric)
