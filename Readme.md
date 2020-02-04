@@ -1,10 +1,10 @@
-### DataTable
+## DataTable
 
 [Live Demo](https://animesh.firebaseapp.com/)
 
 Configurable React based utility to render tables
 
-### Setup
+## Setup
 
 - `yarn`
 - For development: `yarn dev`
@@ -12,17 +12,17 @@ Configurable React based utility to render tables
 - For testing: `yarn run test`
 
 
-### Component Options
+## Component Options
 
-Available options:
+#### Available options:
 
 - filterable: allows filtering columns
 - pagination:
-  - type: "infinite" or "pages"
+  - type: `infinite` or `pages`
   - pageSize
-  - nextPageSize (for type "infinite")
-  - infiniteScrollBtn (for type "infinite")
-  - maxRows (for type "infinite")
+  - nextPageSize (for type `infinite`)
+  - infiniteScrollBtn (for type `infinite`)
+  - maxRows (for type `infinite`)
 - columns:
   - id
   - numeric (right aligns numeric)
@@ -36,7 +36,7 @@ Available options:
 - onRowClick
 - onChange
 
-Usage:
+#### Usage:
 
 ```javascript
 
@@ -88,13 +88,13 @@ Usage:
     {
       id: "url",
       label: "Image",
-      Cell: this.imageCell,
+      Cell: ({ row }) => <img src={row.url}>,
       filterable: false
     },
     {
       id: "thumbnailUrl",
       label: "Thumbnail",
-      Cell: this.thumbnailCell,
+      Cell: ({ row }) => <img src={row.thumbnailUrl}>,
       filterable: false
     }
   ]}
