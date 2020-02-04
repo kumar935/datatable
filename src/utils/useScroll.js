@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
 
+function debounce(fn, delay) {
+  var timer = null;
+  return function() {
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
 export default function useScroll({ pagination, atBottom, atTop, rows }) {
 
   function isBottom (el) {
@@ -12,18 +24,17 @@ export default function useScroll({ pagination, atBottom, atTop, rows }) {
     return document.documentElement.scrollTop == 0;
   }
 
-  function trackScrolling() {
+  const trackScrolling = debounce(() => {
     const wrappedElement = document.querySelector("#app");
     if (isBottom(wrappedElement)) {
       atBottom && atBottom();
       console.log("bottom reached");
-      // document.removeEventListener('scroll', trackScrolling);
     }
     if( isTop(wrappedElement)){
       atTop && atTop();
       console.log("top reached");
     }
-  }
+  }, 100)
 
   useEffect(() => {
     if (

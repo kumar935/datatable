@@ -4,6 +4,7 @@ import { getDummyRows } from "./dummyRows";
 
 class Demo extends Component {
   state = {
+    loading: true,
     selectedRowsMap: {},
     selectedRowIds: [],
     rows: [],
@@ -13,10 +14,10 @@ class Demo extends Component {
     filterable: true,
     pageSize: 20,
     nextPageSize: 20,
-    maxRows: 60,
+    maxRows: 100,
     pageSizeFinal: 20,
     nextPageSizeFinal: 20,
-    maxRowsFinal: 60
+    maxRowsFinal: 100
   };
   componentDidMount() {
     this.fetchRows();
@@ -27,7 +28,7 @@ class Demo extends Component {
         return response.json();
       })
       .then(rows => {
-        this.setState({ rows });
+        this.setState({ rows, loading: false });
       });
 
     // this.setState({ rows: getDummyRows(1000) });
@@ -235,6 +236,10 @@ class Demo extends Component {
           onRowClick={this.onRowClick}
           onChange={this.onChangeDataTable}
         />
+        <h5 style={{textAlign: "center"}}>
+          {this.state.loading ? "Loading..." : ""}
+        </h5>
+
       </div>
     );
   }

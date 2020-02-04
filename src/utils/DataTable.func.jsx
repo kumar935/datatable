@@ -86,6 +86,9 @@ function DataTable({
         setPage(pageRef.current + pagination.nextPageSize); // page is row index for infinite scroll
       }
       setPageSize(nextPageSize);
+      let _docHeight = (document.height !== undefined) ? document.height : document.body.offsetHeight;
+      let newScrollTop = document.documentElement.scrollTop - (_docHeight * 0.08)
+      document.documentElement.scrollTop = newScrollTop;
     } else {
       let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
       if (pageRef.current + 1 >= _pages) return;
