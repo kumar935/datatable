@@ -146,8 +146,8 @@ class Demo extends Component {
                 />
               </label>
             </React.Fragment>
-          ) : ( // this is not working so hiding it for now
-            <label htmlFor="nextPageSize" style={{display: "none"}}>
+          ) : (
+            <label htmlFor="nextPageSize">
               Page Size:
               <input
                 type="text"
@@ -171,9 +171,9 @@ class Demo extends Component {
           </label>
         </div>
         <br/>
-        <div className="opts-note">(On Blur to save text inputs)</div>
+        <div className="opts-note">(Above text input changes will reflect on focus out)</div>
         <DataTable
-          onRef={ref => (this.datatable = ref)}
+          onRef={ref => (this.datatable = ref)} // this only works for class component implementation
           filterable={filterable}
           pagination={{
             type: paginationType, // or infinite or pages by default,

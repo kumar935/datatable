@@ -45,6 +45,12 @@ function DataTable({
     pageRef.current = page;
   }, [rows, pageSize, page]);
 
+  useEffect(() => {
+    setPage(0);
+    setPageSize(pagination.pageSize);
+  }, [pagination]);
+
+
   useScroll({
     rows,
     pagination,
