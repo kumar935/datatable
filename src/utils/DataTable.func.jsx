@@ -37,11 +37,13 @@ function DataTable({
 
   const pageSizeRef = useRef(pageSize);
   const rowsRef = useRef(rows);
+  const pageRef = useRef(page);
 
   useEffect(() => {
     rowsRef.current = rows;
     pageSizeRef.current = pageSize;
-  }, [rows, pageSize]);
+    pageRef.current = page;
+  }, [rows, pageSize, page]);
 
   useScroll({
     rows,
@@ -50,13 +52,13 @@ function DataTable({
       onClickNextPage();
     },
     atTop: () => {
-      if(pagination.maxRows) onClickPrevPage();
+      // if(pagination.maxRows) onClickPrevPage();
     }
   });
 
   function onClickPrevPage() {
     if(pagination.type === "infinite"){
-      let prevPage = page - pagination.nextPageSize;
+      let prevPage = pageRef.current - pagination.nextPageSize;
       prevPage = prevPage >= 0 ? prevPage : 0;
       if(pageSizeRef.current - prevPage > pagination.maxRows){
         setPage(prevPage);
@@ -65,7 +67,7 @@ function DataTable({
         setPage(prevPage)
       }
     } else {
-      if (page > 0) setPage(--page);
+      if (pageRef.current > 0) setPage(--pageRef.current);
     }
   }
 
@@ -75,13 +77,13 @@ function DataTable({
       let nextPageSize = pageSizeRef.current + (pagination.nextPageSize || 10);
       if (pagination.maxRows && (nextPageSize) > pagination.maxRows) {
         nextPageSize = pagination.maxRows;
-        setPage(page + pagination.nextPageSize); // page is row index for infinite scroll
+        setPage(pageRef.current + pagination.nextPageSize); // page is row index for infinite scroll
       }
       setPageSize(nextPageSize);
     } else {
       let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
-      if (page + 1 >= _pages) return;
-      setPage(++page);
+      if (pageRef.current + 1 >= _pages) return;
+      setPage(++pageRef.current);
     }
   }
 
@@ -103,6 +105,11 @@ function DataTable({
 
   function onClickRow(row, index) {
     onRowClick(row, index);
+  }
+
+  function backToTop () {
+    setPage(0);
+    setPageSize(pagination.maxRows);
   }
 
   const onChangeLocal = argObj => {
@@ -146,9 +153,16 @@ function DataTable({
             })}
           </tr>
         </thead>
-        {pagination.infiniteScrollBtn && page > 0 ? (
+        {pagination.type === "infinite" && page > 0 ? (
           <tr>
-            <td colspan="100" style={{textAlign: "center", cursor: "pointer"}} onClick={onClickPrevPage}>Load Prev Data</td>
+            <td colspan="100" style={{textAlign: "center", cursor: "pointer"}}>
+              <button onClick={onClickPrevPage} className="btn" style={{marginRight: 20}}>
+                Load Prev Data
+              </button>
+              <button onClick={backToTop} className="btn">
+                Back To Top
+              </button>
+            </td>
           </tr>
         ) : ""}
         <tbody className="rows">{renderedRows}</tbody>

@@ -83,7 +83,7 @@ class Demo extends Component {
             type: "infinite", // or infinite or pages by default,
             pageSize: 20,
             nextPageSize: 20,
-            infiniteScrollBtn: true,
+            infiniteScrollBtn: false,
             maxRows: 60
           }}
           columns={[
