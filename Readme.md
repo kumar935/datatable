@@ -11,6 +11,10 @@ Configurable React based utility to render tables
 - For build: `yarn run build`
 - For testing: `yarn run test`
 
+## Deployment
+
+ - included deploy.sh script which tests, builds then deploys to host.
+
 
 ## Component Options
 
@@ -104,3 +108,15 @@ Configurable React based utility to render tables
 />
 
 ```
+
+## More info
+
+- Initially started with the class component for DataTable, then switched to functional component using custom hooks. Class implementation also there in code.
+- Infinite Scroll can load data infinitely as previous rows are unloaded being restricted by the `pagination.maxRows` parameter
+- Large No of rows can be handled as only the rows visible are loaded on DOM
+- Fetch API is used to load the data from the rest endpoint
+
+## Test cases
+
+- Have included the setup for doing snapshot testing and custom hooks testing using jest and enzyme.
+- Only a few test cases as of now.
