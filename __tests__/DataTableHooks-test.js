@@ -16,9 +16,9 @@ beforeEach(() => {
     paginationTestRows = useRows({
       filters: [],
       page: 1,
-      pageSize: 10,
+      pageSize: 2,
       pagination: {},
-      rows: [{someCol: "a"}, {someCol: "b"}]
+      rows: [{someCol: "a"}, {someCol: "b"}, {someCol: "a"}]
     });
   });
 });
@@ -28,6 +28,6 @@ describe('useRows', () => {
     expect(filterTestRows[0].length).toBe(1);
   });
   test('testing pagination', () => {
-    expect(paginationTestRows[0].length).toBe(0);
+    expect(paginationTestRows[0].length).toBe(1);
   });
 });

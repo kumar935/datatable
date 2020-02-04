@@ -109,7 +109,7 @@ class Demo extends Component {
           {paginationType === "infinite" ? (
             <React.Fragment>
               <label htmlFor="show-btn-opt">
-                Show Load more Buttons:
+                Show Load more Button:
                 <input
                   type="checkbox"
                   checked={showInfScrollBtn}
