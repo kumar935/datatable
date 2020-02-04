@@ -1,7 +1,7 @@
 {
   "name": "datatable",
   "version": "1.0.0",
-  "description": "",
+  "description": "Configurable React based utility to render tables",
   "main": "index.js",
   "scripts": {
     "test": "jest",

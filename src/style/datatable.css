@@ -107,6 +107,21 @@ input[name="filter"] {
 }
 
 
+.opts-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.opts-container > * {
+  margin-right: 10px;
+}
+
+
+.opts-note {
+  text-align: center;
+  margin-bottom: 14px;
+}
 
 
 
@@ -157,3 +172,4 @@ a.tooltip span {
   box-shadow: 0px 0px 8px 4px #666;
   /*opacity: 0.8;*/
 }
+

@@ -7,7 +7,16 @@ class Demo extends Component {
     selectedRowsMap: {},
     selectedRowIds: [],
     rows: [],
-    selectAllChecked: false
+    selectAllChecked: false,
+    paginationType: "infinite",
+    showInfScrollBtn: false,
+    filterable: true,
+    pageSize: 20,
+    nextPageSize: 20,
+    maxRows: 60,
+    pageSizeFinal: 20,
+    nextPageSizeFinal: 20,
+    maxRowsFinal: 60
   };
   componentDidMount() {
     this.fetchRows();
@@ -70,21 +79,108 @@ class Demo extends Component {
     });
     this.setState({ selectedRowsMap, selectAllChecked: checked });
   };
-  onChangeDataTable = ({ selectAllChecked, visibleRows}) => {
+  onChangeDataTable = ({ selectAllChecked, visibleRows }) => {
     this.toggleSelectAll({ checked: selectAllChecked, visibleRows });
   };
   render() {
+    let {
+      paginationType,
+      filterable,
+      showInfScrollBtn,
+      pageSize,
+      nextPageSize,
+      maxRows,
+      pageSizeFinal,
+      nextPageSizeFinal,
+      maxRowsFinal
+
+    } = this.state;
     return (
       <div className="demo-container">
+        <div className="opts-container">
+          <select
+            name="type"
+            value={paginationType}
+            onChange={e => this.setState({ paginationType: e.target.value })}
+          >
+            <option value="pages">pages</option>
+            <option value="infinite">infinite</option>
+          </select>
+          {paginationType === "infinite" ? (
+            <React.Fragment>
+              <label htmlFor="show-btn-opt">
+                Show Load more Buttons:
+                <input
+                  type="checkbox"
+                  checked={showInfScrollBtn}
+                  id="show-btn-opt"
+                  onChange={e =>
+                    this.setState({ showInfScrollBtn: e.target.checked })
+                  }
+                />
+              </label>
+              <label htmlFor="nextPageSize">
+                Next Page Size:
+                <input
+                  type="text"
+                  id="nextPageSize"
+                  value={this.state.nextPageSize}
+                  onChange={e =>
+                    this.setState({ nextPageSize: e.target.value })
+                  }
+                  onBlur={() => {
+                    this.setState({nextPageSizeFinal: Number(this.state.nextPageSize)})
+                  }}
+                />
+              </label>
+              <label htmlFor="maxRows">
+                Max Rows:
+                <input
+                  type="text"
+                  id="maxRows"
+                  value={this.state.maxRows}
+                  onChange={e => this.setState({ maxRows: e.target.value })}
+                  onBlur={() => {
+                    this.setState({maxRowsFinal: Number(this.state.maxRows)})
+                  }}
+                />
+              </label>
+            </React.Fragment>
+          ) : ( // this is not working so hiding it for now
+            <label htmlFor="nextPageSize" style={{display: "none"}}>
+              Page Size:
+              <input
+                type="text"
+                id="nextPageSize"
+                value={this.state.pageSize}
+                onChange={e => this.setState({ pageSize: e.target.value })}
+                onBlur={() => {
+                  this.setState({pageSizeFinal: Number(this.state.pageSize)})
+                }}
+              />
+            </label>
+          )}
+          <label htmlFor="filterable-opt">
+            filterable:
+            <input
+              type="checkbox"
+              checked={filterable}
+              id="filterable-opt"
+              onChange={e => this.setState({ filterable: e.target.checked })}
+            />
+          </label>
+        </div>
+        <br/>
+        <div className="opts-note">(On Blur to save text inputs)</div>
         <DataTable
           onRef={ref => (this.datatable = ref)}
-          filterable
+          filterable={filterable}
           pagination={{
-            type: "infinite", // or infinite or pages by default,
-            pageSize: 20,
-            nextPageSize: 20,
-            infiniteScrollBtn: false,
-            maxRows: 60
+            type: paginationType, // or infinite or pages by default,
+            pageSize: pageSizeFinal,
+            nextPageSize: nextPageSizeFinal,
+            infiniteScrollBtn: showInfScrollBtn,
+            maxRows: maxRowsFinal
           }}
           columns={[
             {
@@ -94,7 +190,9 @@ class Demo extends Component {
                 return (
                   <input
                     type="checkbox"
-                    onChange={e => onChange({selectAllChecked: e.target.checked})}
+                    onChange={e =>
+                      onChange({ selectAllChecked: e.target.checked })
+                    }
                     checked={this.state.selectAllChecked}
                   />
                 );
@@ -115,7 +213,7 @@ class Demo extends Component {
               width: "60px"
             },
             {
-              id: "title", // Uniq ID to identify column
+              id: "title",
               label: "title",
               width: "32%",
               longtext: true

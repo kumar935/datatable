@@ -32,10 +32,12 @@ export default function useScroll({ pagination, atBottom, atTop, rows }) {
       !pagination.infiniteScrollBtn
     ) {
       document.addEventListener("scroll", trackScrolling);
+    } else {
+      document.removeEventListener("scroll", trackScrolling);
     }
     return () => {
       document.removeEventListener("scroll", trackScrolling);
     };
-  }, []);
+  }, [pagination]);
 
 }
