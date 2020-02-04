@@ -8,7 +8,14 @@ const colsAreValid = cols => {
   return uniqueColumns;
 };
 
-function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange }) {
+function DataTable({
+  rows,
+  columns,
+  filterable,
+  pagination,
+  onRowClick,
+  onChange
+}) {
   // let [rows, setRows] = useState([]);
   let [page, setPage] = useState(0);
   let [pageSize, setPageSize] = useState(pagination ? pagination.pageSize : 10);
@@ -41,21 +48,39 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange
     pagination,
     atBottom: () => {
       onClickNextPage();
+    },
+    atTop: () => {
+      if(pagination.maxRows) onClickPrevPage();
     }
   });
 
   function onClickPrevPage() {
-    if (page > 0) setPage(--page);
+    if(pagination.type === "infinite"){
+      let prevPage = page - pagination.nextPageSize;
+      prevPage = prevPage >= 0 ? prevPage : 0;
+      if(pageSizeRef.current - prevPage > pagination.maxRows){
+        setPage(prevPage);
+        setPageSize(pagination.maxRows);
+      } else {
+        setPage(prevPage)
+      }
+    } else {
+      if (page > 0) setPage(--page);
+    }
   }
 
   function onClickNextPage() {
     // console.log('logging getPages(): ', rows.length);
-    let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
-    if (page + 1 >= _pages) return;
     if (pagination.type === "infinite") {
       let nextPageSize = pageSizeRef.current + (pagination.nextPageSize || 10);
+      if (pagination.maxRows && (nextPageSize) > pagination.maxRows) {
+        nextPageSize = pagination.maxRows;
+        setPage(page + pagination.nextPageSize); // page is row index for infinite scroll
+      }
       setPageSize(nextPageSize);
     } else {
+      let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
+      if (page + 1 >= _pages) return;
       setPage(++page);
     }
   }
@@ -80,9 +105,9 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange
     onRowClick(row, index);
   }
 
-  const onChangeLoc = (argObj) => {
-    onChange({...argObj, visibleRows});
-  }
+  const onChangeLocal = argObj => {
+    onChange({ ...argObj, visibleRows });
+  };
 
   return (
     <div>
@@ -90,14 +115,16 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange
         <thead className="col-headers">
           <tr>
             {columns.map(col => {
-              let {Header} = col;
+              let { Header } = col;
               return (
                 <th key={col.id} style={{ width: col.width || "auto" }}>
                   <div>
                     <div>{col.label}</div>
                     {/* <div>{col.Header || ""}</div> */}
                     {typeof col.Header === "function" ? (
-                      <div><Header onChange={onChangeLoc}/></div>
+                      <div>
+                        <Header onChange={onChangeLocal} />
+                      </div>
                     ) : (
                       <div>{col.Header || ""}</div>
                     )}
@@ -119,6 +146,11 @@ function DataTable({ rows, columns, filterable, pagination, onRowClick, onChange
             })}
           </tr>
         </thead>
+        {pagination.infiniteScrollBtn && page > 0 ? (
+          <tr>
+            <td colspan="100" style={{textAlign: "center", cursor: "pointer"}} onClick={onClickPrevPage}>Load Prev Data</td>
+          </tr>
+        ) : ""}
         <tbody className="rows">{renderedRows}</tbody>
       </table>
       {pagination ? (

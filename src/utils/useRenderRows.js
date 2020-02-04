@@ -13,7 +13,7 @@ export default function useRenderRows({ columns, rows, onClickRow }) {
         let { Cell } = col;
         return (
           <td key={col.id}>
-            <Cell row={row} />
+            <Cell row={row} index={index} />
           </td>
         );
       }

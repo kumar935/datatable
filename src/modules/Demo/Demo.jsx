@@ -80,10 +80,11 @@ class Demo extends Component {
           onRef={ref => (this.datatable = ref)}
           filterable
           pagination={{
-            type: "pages", // or infinite or pages by default,
-            pageSize: 10,
+            type: "infinite", // or infinite or pages by default,
+            pageSize: 20,
             nextPageSize: 20,
-            infiniteScrollBtn: false
+            infiniteScrollBtn: true,
+            maxRows: 60
           }}
           columns={[
             {
@@ -101,6 +102,12 @@ class Demo extends Component {
               Cell: this.actionCell,
               filterable: false,
               width: "20px"
+            },
+            {
+              label: "Id",
+              id: "id",
+              filterable: false,
+              width: "100px"
             },
             {
               id: "albumId",
