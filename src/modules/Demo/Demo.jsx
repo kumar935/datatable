@@ -206,11 +206,13 @@ class Demo extends Component {
               label: "Id",
               id: "id",
               filterable: false,
+              numeric: true,
               width: "100px"
             },
             {
               id: "albumId",
               label: "Album Id",
+              numeric: true,
               width: "60px"
             },
             {
