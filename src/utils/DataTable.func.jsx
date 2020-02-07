@@ -11,10 +11,12 @@ const colsAreValid = cols => {
 function DataTable({
   rows,
   columns,
+  manual,
   filterable,
   pagination,
   onRowClick,
-  onChange
+  onChange,
+  onFetchData = () => {}
 }) {
   // let [rows, setRows] = useState([]);
   let [page, setPage] = useState(0);
@@ -23,6 +25,7 @@ function DataTable({
   let [filtersMap, setFiltersMap] = useState([]);
 
   let [visibleRows] = useRows({
+    manual,
     filters,
     page,
     pageSize,
@@ -46,9 +49,17 @@ function DataTable({
   }, [rows, pageSize, page]);
 
   useEffect(() => {
+    if(manual){
+      onFetchData({
+        page, pageSize, filters
+      })
+    }
+  }, [page, pageSize, filters])
+
+  useEffect(() => {
     setPage(0);
     setPageSize(pagination.pageSize);
-  }, [pagination]);
+  }, [pagination.type]);
 
 
   useScroll({
@@ -92,7 +103,7 @@ function DataTable({
       }
       setPageSize(nextPageSize);
     } else {
-      let _pages = Math.ceil(rowsRef.current.length / pageSizeRef.current);
+      let _pages = manual ? Infinity : Math.ceil(rowsRef.current.length / pageSizeRef.current);
       if (pageRef.current + 1 >= _pages) return;
       setPage(++pageRef.current);
     }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DataTable from "../../utils/DataTable.func";
 import { getDummyRows } from "./dummyRows";
+import { debounce } from "../../utils/utils";
 
 class Demo extends Component {
   state = {
@@ -11,6 +12,7 @@ class Demo extends Component {
     selectAllChecked: false,
     paginationType: "infinite",
     showInfScrollBtn: false,
+    manual: true,
     filterable: true,
     pageSize: 20,
     nextPageSize: 20,
@@ -20,7 +22,7 @@ class Demo extends Component {
     maxRowsFinal: 100
   };
   componentDidMount() {
-    this.fetchRows();
+    if(!this.state.manual) this.fetchRows();
   }
   fetchRows = () => {
     fetch("https://jsonplaceholder.typicode.com/photos")
@@ -83,9 +85,50 @@ class Demo extends Component {
   onChangeDataTable = ({ selectAllChecked, visibleRows }) => {
     this.toggleSelectAll({ checked: selectAllChecked, visibleRows });
   };
+
+  serialize = function(obj) {
+    var str = [];
+    for (var p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
+  }
+
+  fetchData = debounce((data) => {
+    console.log('logging data: ', data);
+    let {page, pageSize, filters} = data;
+    this.setState({ loading: true });
+    let baseUrl = `https://jsonplaceholder.typicode.com/photos`;
+    let filtersQuery = {};
+    filters.filter(f => !!f.value).map(f => {
+      filtersQuery[f.id] = f.value;
+    })
+    let reqObj = {
+      ...this.state.paginationType === "infinite" ? {
+        _start: page
+      } : {
+        _page: page
+      },
+      _limit: pageSize,
+      ...filtersQuery
+    }
+    let fullUrl = `${baseUrl}?${this.serialize(reqObj)}`;
+    fetch(fullUrl)
+      .then(response => {
+        return response.json();
+      })
+      .then(rows => {
+        this.setState({ rows, loading: false });
+      })
+      .catch((error) => {
+        console.error('error in fetchData: ', error);
+      })
+  },200)
   render() {
     let {
       paginationType,
+      manual,
       filterable,
       showInfScrollBtn,
       pageSize,
@@ -175,6 +218,7 @@ class Demo extends Component {
         <div className="opts-note">(Above text input changes will reflect on focus out)</div>
         <DataTable
           onRef={ref => (this.datatable = ref)} // this only works for class component implementation
+          manual={manual}
           filterable={filterable}
           pagination={{
             type: paginationType, // or infinite or pages by default,
@@ -236,11 +280,12 @@ class Demo extends Component {
           ]}
           rows={this.state.rows}
           onRowClick={this.onRowClick}
+          onFetchData={this.fetchData}
           onChange={this.onChangeDataTable}
         />
-        <h5 style={{textAlign: "center"}}>
-          {this.state.loading ? "Loading..." : ""}
-        </h5>
+        {this.state.loading ? (
+          <h5 style={{textAlign: "center", marginBottom: 250}}>Loading...</h5>
+        ) : ''}
 
       </div>
     );

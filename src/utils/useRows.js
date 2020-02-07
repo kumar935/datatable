@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-export default function useRows({ filters, page, pageSize, pagination, rows }) {
+export default function useRows({ manual, filters, page, pageSize, pagination, rows }) {
   function filterRow(row, index) {
     let matchesFilters = filters
       .map(filter => {
@@ -24,6 +24,7 @@ export default function useRows({ filters, page, pageSize, pagination, rows }) {
     return rowInCurrentPage;
   }
 
+  if(manual === true) return [rows];
   let visibleRows = rows.filter(filterRow).filter(paginationFilter);
 
   return [visibleRows];
