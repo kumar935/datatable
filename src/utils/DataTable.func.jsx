@@ -126,7 +126,7 @@ function DataTable({
   }
 
   function onClickRow(row, index) {
-    onRowClick(row, index);
+    onRowClick && onRowClick(row, index);
   }
 
   function backToTop () {
