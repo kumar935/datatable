@@ -279,6 +279,8 @@ class Demo extends Component {
             }
           ]}
           rows={this.state.rows}
+          ignoreInputRowClick={true}
+          onRowClick={this.onRowClick}
           onFetchData={this.fetchData}
           onChange={this.onChangeDataTable}
         />

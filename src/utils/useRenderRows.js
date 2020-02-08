@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import uuidv4 from "uuid/v4";
 
-export default function useRenderRows({ columns, rows, onClickRow }) {
+export default function useRenderRows({ columns, rows, onClickRow, ignoreInputRowClick }) {
 
   function getRow(row, index) {
     let finalRow = columns.map(col => {
@@ -25,7 +25,10 @@ export default function useRenderRows({ columns, rows, onClickRow }) {
       );
     });
     let wrappedFinalRow = (
-      <tr key={uuidv4()} onClick={() => onClickRow(row, index)}>
+      <tr key={uuidv4()} onClick={(event) => {
+        if(event.target.tagName === "INPUT" && ignoreInputRowClick) return;
+        onClickRow(row, index)
+      }}>
         {finalRow}
       </tr>
     );

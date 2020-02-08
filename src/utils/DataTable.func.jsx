@@ -14,6 +14,7 @@ function DataTable({
   manual,
   filterable,
   pagination,
+  ignoreInputRowClick = true,
   onRowClick,
   onChange,
   onFetchData = () => {}
@@ -35,6 +36,7 @@ function DataTable({
   let [renderedRows] = useRenderRows({
     onClickRow,
     columns,
+    ignoreInputRowClick,
     rows: visibleRows
   });
 
